@@ -26,6 +26,9 @@ I also made the existing 'Special' menu easier to read and in a better order.
 - Flash the hex with Cura, OctoPrint or similar
 
 ## Updating
+### Anycubic i3 Mega
+
+This repo can be used on the AnyCubic i3 Mega if the configuration.h file is editied as per [davidramiro's repo](https://github.com/davidramiro/Marlin-Ai3M).
 
 ### Back up & restore your settings
 
