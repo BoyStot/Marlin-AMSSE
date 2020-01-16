@@ -1,14 +1,14 @@
-# Anycubic Mega-S Marlin 1.1.9 by Stot
+# Anycubic Mega-SSE Marlin 1.1.9 by Stot
 
 This is a custom version of the [Marlin Firmware](https://github.com/MarlinFirmware/Marlin) for the Anycubic Mega-S, based on [ davidramiro's repo](https://github.com/davidramiro/Marlin-Ai3M).
 
 ## Why use this?
 
-Other than the great updates added by Davids repo this fork has support for the Stot Switching Extruder, a single stepper extruder capable of automatically switching between 4 filaments.
+Other than the great updates added by Davids repo this fork has support for the Stot Switching Extruder (SSE), a single stepper extruder capable of automatically switching between 4 filaments.
 
-To support this a second menu has been added for 'Filament' to select active filaments and load/unload them.
+To support this a second menu has been added for '~ Filament' to select active filaments and load/unload them on the Anycubic TFT.
 
-I also made the existing 'Special' menu easier to read on the AnyCubic TFT
+I also made the existing 'Special' menu easier to read and in a better order.
 
 ## How to flash this?
 
@@ -17,87 +17,13 @@ I also made the existing 'Special' menu easier to read on the AnyCubic TFT
 - Browse into the Marlin folder and run `Marlin.ino`
 - In the IDE, under `Tools -> Board` select `Genuino Mega 2560` and `ATmega2560`
 - Open Marlin.ino in the Marlin directory of this repo
-- [Customize if needed](https://github.com/davidramiro/Marlin-AI3M/wiki/Customization-&-Compiling) (e.g. motor directions and type at line `559` to `566` and line `857` to `865` in `Configuration.h`)
+- [Customize if needed based on davidramiros repo](https://github.com/davidramiro/Marlin-AI3M/wiki/Customization-&-Compiling) (e.g. motor directions and type at line `559` to `566` and line `857` to `865` in `Configuration.h`)
 - Under `Sketch`, select `Export compiled binary`
 - Look for the .hex file in the Marlin directory (only use the `Marlin.ino.hex`, not the `Marlin.ino.with_bootloader.hex`!)
 
 ### After obtaining the hex file:
 
 - Flash the hex with Cura, OctoPrint or similar
-
-### Testing your bed leveling
-
-- No need to download or create a bed leveling test, simply send those commands to your printer:
-```
-G28
-G26 C H200 P5 R25 Q4.2 Z4
-```
-- To adjust your filament's needed temperature, change the number of the `H` parameter
-- Default bed temperature is 60°C, if you need another temperature, add e.g. `B80`
-- `Q` parameter sets retraction length in mm, `Z` sets unretraction.
-- If your leveling is good, you will have a complete pattern of your mesh on your bed that you can peel off in one piece
-- Don't worry if the test looks a bit messy, the important thing is just that the line width is the same all over the mesh
-- Optional: Hang it up on a wall to display it as a trophy of how great your leveling skills are.
-
-
-## M600 Filament Change
-
-![M600 Demo][m600 demo]
-
-[m600 demo]: https://kore.cc/i3mega/img/m600demo.jpg "M600 demo"
-
-**BETA: This now also works without USB printing, via SD & display.**
-
-#### Configuration (only needed once):
-- Send `M603 L0 U0` to use manual loading & unloading.
-- Send `M603 L538 U555` to use automatic loading & unloading
-  - The `L` and `U` paramters define the load and unload length in mm. The values above work well on a stock setup, if you modded your extruder, bowden tube or hotend, you might need to adjust those.
-- Save with `M500`
-
-#### Filament change process (manual loading):
-- For printing via SD:
-  - Place `M600` in your GCode at the desired layer
-- For printing via USB:
-  - Place `M600` in your GCode at the desired layer or send it via terminal
-  - Alternatively: Use `FilamentChange Pause` in the Special Menu
-- The nozzle will park and your printer will beep
-  - For safety reasons, the printer will turn off the hotend after 10 minutes. If you see the temperature being under the target:
-    - SD printing: Click `CONTINUE` **(only once!)** on the screen and wait for the hotend to heat up again.
-    - USB printing: Send `M108` and wait for the hotend to heat up again.
-- Remove the filament from the bowden tube
-- Insert the new filament right up to the nozzle, just until a bit of plastic oozes out
-- Remove the excess filament from the nozzle with tweezers
-- For printing via SD:
-  - Click `CONTINUE` on the screen
-- For printing via USB:
-  - Send `M108` via your USB host or use `FilamentChange Resume` in the Special Menu
-  - Note for OctoPrint users: After sending `M108`, enable the advanced options at the bottom of the terminal and press `Fake Acknowledgement`
-
-#### Filament change process (automatic loading):
-- For printing via SD:
-  - Place `M600` in your GCode at the desired layer
-- For printing via USB:
-  - Place `M600` in your GCode at the desired layer or send it via terminal
-  - Alternatively: Use `FilamentChange Pause` in the Special Menu
-- The nozzle will park
-- The printer will remove the filament right up to the extruder and beep when finished
-  - For safety reasons, the printer will turn off the hotend after 10 minutes. If you see the temperature being under the target:
-    - SD printing: Click `CONTINUE` **(only once!)** on the screen and wait for the hotend to heat up again.
-    - USB printing: Send `M108` and wait for the hotend to heat up again.
-- Insert the new filament just up to the end of the bowden fitting, as shown here:
-
-![Load Filament][m600 load]
-
-[m600 load]: https://kore.cc/i3mega/img/load.jpg "M600 Load"
-
-- For printing via SD:
-  - Click `CONTINUE` on the screen
-- For printing via USB:
-  - Send `M108` via your USB host or use `FilamentChange Resume` in the Special Menu
-  - Note for OctoPrint users: After sending `M108`, enable the advanced options at the bottom of the terminal and press `Fake Acknowledgement`
-- The printer will now pull in the new filament, watch out since it might ooze quite a bit from the nozzle
-- Remove the excess filament from the nozzle with tweezers
-
 
 ## Updating
 
@@ -118,15 +44,6 @@ After flashing the new version, issue a `M502` and `M500`. After that, enter eve
 No worries. You can easily go back to the default firmware and restore the default settings.
 - Flash the hex file from the [manufacturer's website](http://www.anycubic3d.com/support/show/594016.html)
 - After flashing, send `M502` and `M500`. Now your machine is exactly as it came out of the box.
-
-## Changes by [derhopp](https://github.com/derhopp/):
-
-- 12V capability on FAN0 (parts cooling fan) enabled
-- Buzzer disabled (e.g. startup beep)
-- Subdirectory support: Press the round arrow after selecting a directory
-- Special menu in the SD file menu: Press the round arrow after selecting `Special menu`
-
-
 
 ## About Marlin
 
