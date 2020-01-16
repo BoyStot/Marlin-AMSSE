@@ -4,11 +4,11 @@ This is a custom version of the [Marlin Firmware](https://github.com/MarlinFirmw
 
 ## Why use this?
 
-Other than the great updates added by Davids repo this fork has support for the Stot Switching Extruder (SSE), a single stepper extruder capable of automatically switching between 4 filaments.
+Other than the great updates added by Davids repo this fork has support for the Stot Switching Extruder (SSE), a single stepper extruder capable of automatically switching between 4 filaments by utilizing one of the servo signals, so as long as you dont have a bltouch for example, without any hardware changes.
 
 To support this a second menu has been added for '~ Filament' to select active filaments and load/unload them on the Anycubic TFT.
 
-I also made the existing 'Special' menu easier to read and in a better order.
+I also made the existing 'Special' menu easier to read and in a more natural order.
 
 ## How to flash this?
 
