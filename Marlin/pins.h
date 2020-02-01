@@ -541,15 +541,18 @@
 #define _E4_PINS
 
 #if ENABLED(SWITCHING_EXTRUDER)
-                      // Tools 0 and 1 use E0
-  #if EXTRUDERS > 2   // Tools 2 and 3 use E1
-    #undef _E1_PINS
-    #define _E1_PINS E1_STEP_PIN, E1_DIR_PIN, E1_ENABLE_PIN, E1_MS1_PIN, E1_MS2_PIN, E1_CS_PIN,
-    #if EXTRUDERS > 4 // Tools 4 and 5 use E2
-      #undef _E2_PINS
-      #define _E2_PINS E2_STEP_PIN, E2_DIR_PIN, E2_ENABLE_PIN, E2_MS1_PIN, E2_MS2_PIN, E2_CS_PIN,
+  #if DISABLED(STOT_SWITCHING_EXTRUDER)  	// Tools 0-3 use E0 for SSE
+                        // Tools 0 and 1 use E0
+    #if EXTRUDERS > 2   // Tools 2 and 3 use E1
+      #undef _E1_PINS
+      #define _E1_PINS E1_STEP_PIN, E1_DIR_PIN, E1_ENABLE_PIN, E1_MS1_PIN, E1_MS2_PIN, E1_CS_PIN,
+      #if EXTRUDERS > 4 // Tools 4 and 5 use E2
+        #undef _E2_PINS
+        #define _E2_PINS E2_STEP_PIN, E2_DIR_PIN, E2_ENABLE_PIN, E2_MS1_PIN, E2_MS2_PIN, E2_CS_PIN,
+      #endif
     #endif
-  #endif
+  #endif // !ENABLED(SWITCHING_EXTRUDER)
+
 #elif EXTRUDERS > 1
   #undef _E1_PINS
   #define _E1_PINS E1_STEP_PIN, E1_DIR_PIN, E1_ENABLE_PIN, E1_MS1_PIN, E1_MS2_PIN, E1_CS_PIN,

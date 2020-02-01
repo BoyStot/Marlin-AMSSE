@@ -391,12 +391,16 @@
  *
  */
 #if ENABLED(SWITCHING_EXTRUDER)                               // One stepper for every two EXTRUDERS
-  #if EXTRUDERS > 4
-    #define E_STEPPERS    3
-  #elif EXTRUDERS > 2
-    #define E_STEPPERS    2
+  #if ENABLED(STOT_SWITCHING_EXTRUDER) // One stepper for every 4 EXTRUDERS
+  	#define E_STEPPERS    1
   #else
-    #define E_STEPPERS    1
+    #if EXTRUDERS > 4
+		#define E_STEPPERS    3
+	#elif EXTRUDERS > 2
+		#define E_STEPPERS    2
+	#else
+		#define E_STEPPERS    1
+	#endif
   #endif
   #if DISABLED(SWITCHING_NOZZLE)
     #define HOTENDS       E_STEPPERS

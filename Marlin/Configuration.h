@@ -81,7 +81,7 @@
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "(davidramiro)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(stot)" // Who made the changes.
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION   // will be shown during bootup in line 1
 #define STRING_SPLASH_LINE2 CUSTOM_BUILD_VERSION  // will be shown during bootup in line 2
@@ -146,13 +146,13 @@
 
 // This defines the number of extruders
 // :[1, 2, 3, 4, 5]
-#define EXTRUDERS 1
+#define EXTRUDERS 4
 
 // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
 #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
 
 // For Cyclops or any "multi-extruder" that shares a single nozzle.
-//#define SINGLENOZZLE
+#define SINGLENOZZLE
 
 /**
  * Průša MK2 Single Nozzle Multi-Material Multiplexer, and variants.
@@ -174,13 +174,24 @@
 #endif
 
 // A dual extruder that uses a single stepper motor
-//#define SWITCHING_EXTRUDER
+#define SWITCHING_EXTRUDER
+#define STOT_SWITCHING_EXTRUDER
 #if ENABLED(SWITCHING_EXTRUDER)
   #define SWITCHING_EXTRUDER_SERVO_NR 0
-  #define SWITCHING_EXTRUDER_SERVO_ANGLES { 0, 90 } // Angles for E0, E1[, E2, E3]
-  #if EXTRUDERS > 3
-    #define SWITCHING_EXTRUDER_E23_SERVO_NR 1
+  #if ENABLED(STOT_SWITCHING_EXTRUDER)
+    #define SWITCHING_EXTRUDER_SERVO_ANGLES { 35, 85, 135, 180 } // Angles for E0, E1[, E2, E3]
+    #define COMBINER_LENGTH 60 // Distance from Combiner outlet to furthest inlet.  Can be the distance from the outlet
+                                   // to the end of the inlet bowden tube +10mm if known.
+    #define COMBINER_TO_COOLING_BOWDEN_LENGTH 0 // Distance from the top of the cooling tube to the outlet of the
+                                                // filament combiner
+    #define COOLING_TUBE_LENGTH 60 // Length of the cooling tube in MM from the nozzle to the opening.
+  #else
+    #define SWITCHING_EXTRUDER_SERVO_ANGLES { 0, 90 } // Angles for E0, E1[, E2, E3]
+    #if EXTRUDERS > 3
+     #define SWITCHING_EXTRUDER_E23_SERVO_NR 1
+    #endif
   #endif
+  
 #endif
 
 // A dual-nozzle that uses a servomotor to raise/lower one of the nozzles
@@ -467,7 +478,7 @@
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
 #define PREVENT_LENGTHY_EXTRUDE
-#define EXTRUDE_MAXLENGTH 600
+#define EXTRUDE_MAXLENGTH 1000
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================
@@ -556,14 +567,14 @@
  *          TMC5130, TMC5130_STANDALONE
  * :['A4988', 'DRV8825', 'LV8729', 'L6470', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE']
  */
-#define X_DRIVER_TYPE  TMC2208_STANDALONE // comment out for stock drivers
-#define Y_DRIVER_TYPE  TMC2208_STANDALONE // comment out for stock drivers
-#define Z_DRIVER_TYPE  TMC2208_STANDALONE // comment out for stock drivers
+//#define X_DRIVER_TYPE  TMC2208_STANDALONE // comment out for stock drivers
+//#define Y_DRIVER_TYPE  TMC2208_STANDALONE // comment out for stock drivers
+//#define Z_DRIVER_TYPE  TMC2208_STANDALONE // comment out for stock drivers
 #define X2_DRIVER_TYPE TMC2208_STANDALONE
 #define Y2_DRIVER_TYPE TMC2208_STANDALONE
-#define Z2_DRIVER_TYPE TMC2208_STANDALONE // comment out for stock drivers
-#define E0_DRIVER_TYPE TMC2208_STANDALONE // comment out for stock drivers
-#define E1_DRIVER_TYPE TMC2208_STANDALONE // comment out for stock drivers
+//#define Z2_DRIVER_TYPE TMC2208_STANDALONE // comment out for stock drivers
+//#define E0_DRIVER_TYPE TMC2208_STANDALONE // comment out for stock drivers
+//#define E1_DRIVER_TYPE TMC2208_STANDALONE // comment out for stock drivers
 #define E2_DRIVER_TYPE TMC2208_STANDALONE
 #define E3_DRIVER_TYPE TMC2208_STANDALONE
 #define E4_DRIVER_TYPE TMC2208_STANDALONE
@@ -614,7 +625,7 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 92.6 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 298 } // SSE extruder actual steps per unit.
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -860,20 +871,20 @@
 // @section extruder
 
 #define DISABLE_E false // For all extruders
-#define DISABLE_INACTIVE_EXTRUDER true // Keep only the active extruder enabled.
+#define DISABLE_INACTIVE_EXTRUDER false // Keep only the active extruder enabled. // SSE CHANGE
 
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false // set to true for stock drivers or TMC2208 with reversed connectors
-#define INVERT_Y_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_Z_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+#define INVERT_X_DIR true // set to true for stock drivers or TMC2208 with reversed connectors
+#define INVERT_Y_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+#define INVERT_Z_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
 
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_E1_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+#define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+#define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 #define INVERT_E4_DIR false
@@ -1950,15 +1961,15 @@
  * Set this manually if there are extra servos needing manual control.
  * Leave undefined or set to 0 to entirely disable the servo subsystem.
  */
-//#define NUM_SERVOS 3 // Servo index starts with 0 for M280 command
+#define NUM_SERVOS 1 // Servo index starts with 0 for M280 command - Added in for extruder change servo
 
 // Delay (in milliseconds) before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.
 // If the servo can't reach the requested position, increase it.
-#define SERVO_DELAY { 300 }
+#define SERVO_DELAY { 600 }
 
 // Only power servos during movement, otherwise leave off to prevent jitter
-//#define DEACTIVATE_SERVOS_AFTER_MOVE
+#define DEACTIVATE_SERVOS_AFTER_MOVE
 
 /**
  * Select your version of the Trigorilla (RAMPS1.4) board here.

@@ -41,20 +41,20 @@
    * Defines the version of the Marlin-AI3M build. Not to be confused with
    * Marlin's own build number, e.g. 1.1.9.
    */
-  #define CUSTOM_BUILD_VERSION "v1.4.6"
+  #define CUSTOM_BUILD_VERSION "v1.4.6.2"
 
   /**
    * Verbose version identifier which should contain a reference to the location
    * from where the binary was downloaded or the source code was compiled.
    */
-  #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (Github, davidramiro)"
+  #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (Github, boystot)"
 
   /**
    * The STRING_DISTRIBUTION_DATE represents when the binary file was built,
    * here we define this default string as the date where the latest release
    * version was tagged.
    */
-  #define STRING_DISTRIBUTION_DATE "2019-04-03"
+  #define STRING_DISTRIBUTION_DATE "2020-01-17"
 
   /**
    * Required minimum Configuration.h and Configuration_adv.h file versions.
@@ -76,7 +76,7 @@
   /**
    * Defines a generic printer name to be output to the LCD after booting Marlin.
    */
-  #define MACHINE_NAME "Anycubic i3 Mega"
+  #define MACHINE_NAME "Anycubic Mega SSE"
 
   /**
    * The SOURCE_CODE_URL is the location where users will find the Marlin Source

@@ -11366,6 +11366,79 @@ inline void gcode_M502() {
 
 #endif // FILAMENT_LOAD_UNLOAD_GCODES
 
+#if ENABLED(STOT_SWITCHING_EXTRUDER)
+  /**
+   * M751: SSE Tool Change Load filament
+   *
+   * C<distance> - Cooling tube length. If omitted COOLING_TUBE_LENGTH is used.
+   * Y<distance> - Length of the Y filament combiner from output to input furthest from output. If omitted
+   *               COMBINER_LENGTH is used.
+   * B<distance> - Bowden tube Length from the top of the cooling tube to the output of the filament combiner. If
+   *               omitted COMBINER_TO_COOLING_BOWDEN_LENGTH is used.
+   *
+   */
+  inline void gcode_M751() {
+   if (parser.seenval('Z')) park_point.z = parser.linearval('Z');
+
+    const float cooling_tube_length = parser.seenval('C') ? parser.linearval('C') : COOLING_TUBE_LENGTH;
+    const float combiner_length = parser.seenval('Y') ? parser.linearval('Y') : COMBINER_LENGTH;
+    const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
+    const float park_point = cooling_tube_length + combiner_to_cooling_bowden_length + combiner_length;
+    const float over_park_point = park_point + 5;
+
+    enqueue_and_echo_commands_P(PSTR("G90\n"+ // ABS COORDS
+                                     "M82\n"+ // E Abs
+                                     "G92 E0\n"+ // ZERO EXTRUDER
+                                     "G1 E"+combiner_length+" F1000\n"+ // SLOWLY PAST JOIN
+                                     "G1 E"+combiner_to_cooling_bowden_length+" F8000\n"+ // QUICKLY UPTO NOZZLE
+                                     "G1 E"+park_point+" F300"+ // SLOW FINAL APPROACH
+                                     "G1 E"+over_park_point+" F300" // EXTRA BIT
+                                     )
+                                );
+  }
+
+  /**
+   * M752: SSE Tool Change Unload filament
+   *
+   * C<distance> - Cooling tube length. If omitted COOLING_TUBE_LENGTH is used.
+   * Y<distance> - Length of the Y filament combiner from output to input furthest from output. If omitted
+   *               COMBINER_LENGTH is used.
+   * B<distance> - Bowden tube Length from the top of the cooling tube to the output of the filament combiner. If
+   *               omitted COMBINER_TO_COOLING_BOWDEN_LENGTH is used.
+   *
+   */
+  inline void gcode_M752() {
+    const float cooling_tube_length = parser.seenval('C') ? parser.linearval('C') : COOLING_TUBE_LENGTH;
+    const float cooling_tube_centre = cooling_tube_length / 2;
+    const float combiner_length = parser.seenval('Y') ? parser.linearval('Y') : COMBINER_LENGTH;
+    const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
+    const float park_point = cooling_tube_length + combiner_to_cooling_bowden_length + combiner_length;
+
+    enqueue_and_echo_commands_P(PSTR("G90\n"+ // ABS COORDS
+                                     "M82\n"+ // E Abs
+                                     "G92 E0\n"+ // ZERO EXTRUDER
+                                     "G1 E15 F8400\n"+ // Fast extrude to purge melt zone
+                                     "G92 E0\n"+ // ZERO EXTRUDER
+                                     "G1 E-"+cooling_tube_length+" F12000\n"+ // FAST retract to top of cooling tube
+                                     "G4 P500"+ // WAIT 0.5 seconds
+                                     "G1 E0 F12000"+ // FAST insert to hotend
+                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
+                                     "G1 E0 F12000"+ // FAST insert to hotend
+                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
+                                     "G1 E0 F12000"+ // FAST insert to hotend
+                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
+                                     "G1 E0 F12000"+ // FAST insert to hotend
+                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
+                                     "G1 E0 F12000"+ // FAST insert to hotend
+                                     "G1 E-"+cooling_tube_length+" F12000\n"+ // FAST retract to top of cooling tube
+                                     "G4 P2000"+ // WAIT 2 seconds
+                                     "G1 E-"+park_point+" F12000"+ // FAST retract to park point
+                                     "G92 E0\n" // ZERO EXTRUDER
+                                     )
+                                );
+  }
+#endif // STOT_SWITCHING_EXTRUDER
+
 #if ENABLED(MAX7219_GCODE)
   /**
    * M7219: Control the Max7219 LED matrix
@@ -12243,7 +12316,11 @@ inline void gcode_M999() {
 #if DO_SWITCH_EXTRUDER
   #if EXTRUDERS > 3
     #define REQ_ANGLES 4
-    #define _SERVO_NR (e < 2 ? SWITCHING_EXTRUDER_SERVO_NR : SWITCHING_EXTRUDER_E23_SERVO_NR)
+	#if ENABLED(STOT_SWITCHING_EXTRUDER)
+      #define _SERVO_NR SWITCHING_EXTRUDER_SERVO_NR // ONE SERVO FOR 4 EXTRUDERS
+  	#else	
+      #define _SERVO_NR (e < 2 ? SWITCHING_EXTRUDER_SERVO_NR : SWITCHING_EXTRUDER_E23_SERVO_NR)
+	#endif
   #else
     #define REQ_ANGLES 2
     #define _SERVO_NR SWITCHING_EXTRUDER_SERVO_NR
@@ -12267,7 +12344,7 @@ inline void gcode_M999() {
     const int16_t angles[2] = SWITCHING_NOZZLE_SERVO_ANGLES;
     planner.synchronize();
     MOVE_SERVO(SWITCHING_NOZZLE_SERVO_NR, angles[e]);
-    safe_delay(500);
+    safe_delay(600);
   }
 #endif
 
@@ -13181,6 +13258,11 @@ void process_parsed_command() {
       #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
         case 701: gcode_M701(); break;                            // M701: Load Filament
         case 702: gcode_M702(); break;                            // M702: Unload Filament
+      #endif
+
+      #if ENABLED(STOT_SWITCHING_EXTRUDER)
+        case 751: gcode_M751(); break;                            // M751: SSE Load Filament to hotend
+        case 752: gcode_M752(); break;                            // M752: SSE Unload Filament to park point
       #endif
 
       #if ENABLED(MAX7219_GCODE)
