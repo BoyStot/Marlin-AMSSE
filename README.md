@@ -10,6 +10,36 @@ To support this a new '> SSE Menu' has been added to select active filaments and
 
 I also made the existing 'Special' menu easier to read and in a more natural order.
 
+## Custom G-Codes
+
+I have added 2 custom gcode commands to use for loading and unloading filaments.  Without any extra parameters these will use the Configuration.h settings COMBINER_LENGTH, COMBINER_TO_COOLING_BOWDEN_LENGTH and COOLING_TUBE_LENGTH all of which can be overwritten by entering them on the gcode.
+
+### M751 Load Filament
+
+This will load the filament from the parked position to the hot end.
+
+Optional parameters are
+
+ #### C\<distance\>
+ Cooling tube length in mm. If omitted COOLING_TUBE_LENGTH is used.
+ #### Y\<distance\> 
+ Length of the Y filament combiner in mm from output to input furthest from output. If omitted COMBINER_LENGTH is used.
+ #### B\<distance\> 
+ Bowden tube Length in mm from the top of the cooling tube to the output of the filament combiner. If omitted COMBINER_TO_COOLING_BOWDEN_LENGTH is used. 
+
+### M752 Unload Filament
+
+This will perform a series of extruder operations to minimise stringing then extract the filament back to the park position.
+
+Optional parameters are
+
+ #### C\<distance\>
+ Cooling tube length in mm. If omitted COOLING_TUBE_LENGTH is used.
+ #### Y\<distance\> 
+ Length of the Y filament combiner in mm from output to input furthest from output. If omitted COMBINER_LENGTH is used.
+ #### B\<distance\> 
+ Bowden tube Length in mm from the top of the cooling tube to the output of the filament combiner. If omitted COMBINER_TO_COOLING_BOWDEN_LENGTH is used. 
+ 
 ## How to flash this?
 
 - Download and install [Arduino IDE](https://www.arduino.cc/en/main/software)
