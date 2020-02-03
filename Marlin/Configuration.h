@@ -180,11 +180,11 @@
   #define SWITCHING_EXTRUDER_SERVO_NR 0
   #if ENABLED(STOT_SWITCHING_EXTRUDER)
     #define SWITCHING_EXTRUDER_SERVO_ANGLES { 35, 85, 135, 180 } // Angles for E0, E1[, E2, E3]
-    #define COMBINER_LENGTH 60 // Distance from Combiner outlet to furthest inlet.  Can be the distance from the outlet
-                                   // to the end of the inlet bowden tube +10mm if known.
-    #define COMBINER_TO_COOLING_BOWDEN_LENGTH 0 // Distance from the top of the cooling tube to the outlet of the
-                                                // filament combiner
-    #define COOLING_TUBE_LENGTH 60 // Length of the cooling tube in MM from the nozzle to the opening.
+    #define COMBINER_LENGTH 40 // Distance from Combiner outlet to furthest inlet.  Can be the distance from the outlet
+                               // to the end of the inlet bowden tube +10mm if known.
+    #define COMBINER_TO_COOLING_BOWDEN_LENGTH 10 // Distance from the top of the cooling tube to the outlet of the
+                                                 // filament combiner
+    #define COOLING_TUBE_LENGTH 50 // Length of the cooling tube in MM from centre of heating block to the opening.
   #else
     #define SWITCHING_EXTRUDER_SERVO_ANGLES { 0, 90 } // Angles for E0, E1[, E2, E3]
     #if EXTRUDERS > 3

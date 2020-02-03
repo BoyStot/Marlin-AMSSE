@@ -11378,23 +11378,18 @@ inline void gcode_M502() {
    *
    */
   inline void gcode_M751() {
-   if (parser.seenval('Z')) park_point.z = parser.linearval('Z');
-
     const float cooling_tube_length = parser.seenval('C') ? parser.linearval('C') : COOLING_TUBE_LENGTH;
     const float combiner_length = parser.seenval('Y') ? parser.linearval('Y') : COMBINER_LENGTH;
     const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
     const float park_point = cooling_tube_length + combiner_to_cooling_bowden_length + combiner_length;
     const float over_park_point = park_point + 5;
 
-    enqueue_and_echo_commands_P(PSTR("G90\n"+ // ABS COORDS
-                                     "M82\n"+ // E Abs
-                                     "G92 E0\n"+ // ZERO EXTRUDER
-                                     "G1 E"+combiner_length+" F1000\n"+ // SLOWLY PAST JOIN
-                                     "G1 E"+combiner_to_cooling_bowden_length+" F8000\n"+ // QUICKLY UPTO NOZZLE
-                                     "G1 E"+park_point+" F300"+ // SLOW FINAL APPROACH
-                                     "G1 E"+over_park_point+" F300" // EXTRA BIT
-                                     )
-                                );
+    do_pause_e_move(combiner_length, 8); // SLOW insert to bottom of combiner
+    do_pause_e_move(combiner_to_cooling_bowden_length+(combiner_length-15), 80); // FAST insert to CENTRE of cooling tube
+    do_pause_e_move(15,8); // SLOW insert to bottom of cooling tube.
+
+    current_position[E_CART] = 0; // Reset E to 0
+    //enqueue_and_echo_commands_P(PSTR("G92 E0")); // TODO do this programatically?
   }
 
   /**
@@ -11414,28 +11409,24 @@ inline void gcode_M502() {
     const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
     const float park_point = cooling_tube_length + combiner_to_cooling_bowden_length + combiner_length;
 
-    enqueue_and_echo_commands_P(PSTR("G90\n"+ // ABS COORDS
-                                     "M82\n"+ // E Abs
-                                     "G92 E0\n"+ // ZERO EXTRUDER
-                                     "G1 E15 F8400\n"+ // Fast extrude to purge melt zone
-                                     "G92 E0\n"+ // ZERO EXTRUDER
-                                     "G1 E-"+cooling_tube_length+" F12000\n"+ // FAST retract to top of cooling tube
-                                     "G4 P500"+ // WAIT 0.5 seconds
-                                     "G1 E0 F12000"+ // FAST insert to hotend
-                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
-                                     "G1 E0 F12000"+ // FAST insert to hotend
-                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
-                                     "G1 E0 F12000"+ // FAST insert to hotend
-                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
-                                     "G1 E0 F12000"+ // FAST insert to hotend
-                                     "G1 E-"+cooling_tube_centre+" F12000\n"+ // FAST retract to top of cooling tube
-                                     "G1 E0 F12000"+ // FAST insert to hotend
-                                     "G1 E-"+cooling_tube_length+" F12000\n"+ // FAST retract to top of cooling tube
-                                     "G4 P2000"+ // WAIT 2 seconds
-                                     "G1 E-"+park_point+" F12000"+ // FAST retract to park point
-                                     "G92 E0\n" // ZERO EXTRUDER
-                                     )
-                                );
+    do_pause_e_move(15, 20); // purge melt zone quickly
+    do_pause_e_move(-cooling_tube_length), 80); // FAST retract to top of cooling tube
+    safe_delay(500);
+    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
+    do_pause_e_move(-cooling_tube_centre, 80); // FAST retract to middle of cooling tube
+    do_pause_e_move(cooling_tube_centre, 80); // FAST insert to hotend
+    do_pause_e_move(-cooling_tube_centre, 80); // FAST retract to middle of cooling tube
+    safe_delay(500);
+    do_pause_e_move(cooling_tube_centre, 80); // FAST insert to hotend
+    do_pause_e_move(-cooling_tube_centre, 80); // FAST retract to middle of cooling tube
+    do_pause_e_move(cooling_tube_centre, 80); // FAST insert to hotend
+    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
+    safe_delay(2000);
+    do_pause_e_move(-combiner_to_cooling_bowden_length, 80); // FAST retract to bottom of combiner
+    do_pause_e_move(-combiner_length, 8); // SLOW retract to top of combiner
+
+    current_position[E_CART] = 0; // Reset E to 0
+    // enqueue_and_echo_commands_P(PSTR("G92 E0")); // TODO do this programatically?
   }
 #endif // STOT_SWITCHING_EXTRUDER
 
