@@ -11391,7 +11391,6 @@ inline void gcode_M502() {
     do_pause_e_move(15,8); // SLOW insert to bottom of cooling tube.
 
     current_position[E_CART] = 0; // Reset E to 0
-    //enqueue_and_echo_commands_P(PSTR("G92 E0")); // TODO do this programatically?
   }
 
   /**
@@ -11428,7 +11427,6 @@ inline void gcode_M502() {
     do_pause_e_move(-combiner_length, 8); // SLOW retract to top of combiner
 
     current_position[E_CART] = 0; // Reset E to 0
-    // enqueue_and_echo_commands_P(PSTR("G92 E0")); // TODO do this programatically?
   }
 #endif // STOT_SWITCHING_EXTRUDER
 

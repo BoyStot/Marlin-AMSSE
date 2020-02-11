@@ -115,7 +115,7 @@ void AnycubicTFTClass::Setup() {
 
   SelectedDirectory[0]=0;
   SpecialMenu=false;
-  FilamentMenu=false;
+  SSEMenu=false;
   FilamentHelpMenu=false;
 
   #ifdef STARTUP_CHIME
@@ -409,6 +409,18 @@ void AnycubicTFTClass::HandleSpecialMenu()
 {
   if(strcmp(SelectedDirectory, "> special menu")==0) {
     SpecialMenu=true;
+  } else if(strcmp(SelectedDirectory, "> sse menu")==0) {
+    SSEMenu=true;
+    SpecialMenu=false;
+  } else if(strcmp(SelectedDirectory, "> manual filament change")==0) {
+    FilChangeMenu=true;
+    SpecialMenu=false;
+  } else if(strcmp(SelectedDirectory, "> bed levelling")==0) {
+    MeshMenu=true;
+    SpecialMenu=false;
+  } else if(strcmp(SelectedDirectory, "> tools")==0) {
+    ToolsMenu=true;
+    SpecialMenu=false;
   } else if (strcmp(SelectedDirectory, "> auto tune hotend pid")==0) {
     SERIAL_PROTOCOLLNPGM("Special Menu: Auto Tune Hotend PID");
     enqueue_and_echo_commands_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
@@ -452,63 +464,53 @@ void AnycubicTFTClass::HandleSpecialMenu()
   } else if (strcmp(SelectedDirectory, "> filamentchange resume")==0) {
     SERIAL_PROTOCOLLNPGM("Special Menu: FilamentChange Resume");
     FilamentChangeResume();
-  } else if(strcmp(SelectedDirectory, "> sse menu")==0) {
-        FilamentMenu=true;
-        SpecialMenu=false;
-  } else if (strcmp(SelectedDirectory, "> exit")==0) {
-    SpecialMenu=false;
-  }
-  SelectedDirectory[0]=0;
-}
-
-void AnycubicTFTClass::HandleFilamentMenu()
-{
-  if (strcmp(SelectedDirectory, "~ switch filament 1")==0) {
+  } else if (strcmp(SelectedDirectory, "> select filament 1")==0) {
     SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 1");
     enqueue_and_echo_commands_P(PSTR("T0"));
-  } else if (strcmp(SelectedDirectory, "~ switch filament 2")==0) {
+  } else if (strcmp(SelectedDirectory, "> select filament 2")==0) {
     SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 2");
     enqueue_and_echo_commands_P(PSTR("T1"));
-  } else if (strcmp(SelectedDirectory, "~ switch filament 3")==0) {
+  } else if (strcmp(SelectedDirectory, "> select filament 3")==0) {
     SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 3");
     enqueue_and_echo_commands_P(PSTR("T2"));
-  } else if (strcmp(SelectedDirectory, "~ switch filament 4")==0) {
-      SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 4");
-      enqueue_and_echo_commands_P(PSTR("T3"));
-  } else if (strcmp(SelectedDirectory, "~ filament feed 5mm")==0) {
-      SERIAL_PROTOCOLLNPGM("Filament Menu: Feed 5mm Filament");
-      enqueue_and_echo_commands_P(PSTR("G90\nM82\nG92 E0\nG1 F300 E5"));
-  } else if (strcmp(SelectedDirectory, "~ filament load")==0) {
-      SERIAL_PROTOCOLLNPGM("Filament Menu: Load Filament");
-      enqueue_and_echo_commands_P(PSTR("M751")); // over insert to account for slippage.
-  } else if (strcmp(SelectedDirectory, "~ filament retract")==0) {
-      SERIAL_PROTOCOLLNPGM("Filament Menu: Retract Filament");
-      enqueue_and_echo_commands_P(PSTR("M752"));
-  } else if (strcmp(SelectedDirectory, "~ heat hotend 190c")==0) {
-      SERIAL_PROTOCOLLNPGM("Filament Menu: Heat Hotend to 190c");
-      enqueue_and_echo_commands_P(PSTR("M104 S190"));
-  } else if (strcmp(SelectedDirectory, "~ heat hotend 230c")==0) {
-      SERIAL_PROTOCOLLNPGM("Filament Menu: Heat Hotend to 230c");
-      enqueue_and_echo_commands_P(PSTR("M104 S230"));
-  } else if (strcmp(SelectedDirectory, "~ hotend off")==0) {
-      SERIAL_PROTOCOLLNPGM("Filament Menu: Disable Hotend");
-      enqueue_and_echo_commands_P(PSTR("M104 S0"));
-  } else if (strcmp(SelectedDirectory, "~ exit")==0) {
-    FilamentMenu=false;
-    SpecialMenu=true;
-  }
-  SelectedDirectory[0]=0;
-}
-
-void AnycubicTFTClass::HandleFilamentHelpMenu()
-{
-  if(strcmp(SelectedDirectory, "? loading info")==0) {
+  } else if (strcmp(SelectedDirectory, "> select filament 4")==0) {
+    SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 4");
+    enqueue_and_echo_commands_P(PSTR("T3"));
+  } else if (strcmp(SelectedDirectory, "> filament feed 20mm")==0) {
+    SERIAL_PROTOCOLLNPGM("Filament Menu: Feed 20mm Filament");
+    enqueue_and_echo_commands_P(PSTR("G90\nM82\nG92 E0\nG1 F300 E20\nG92 E0"));
+  } else if (strcmp(SelectedDirectory, "> filament load")==0) {
+    SERIAL_PROTOCOLLNPGM("Filament Menu: Load Filament");
+    enqueue_and_echo_commands_P(PSTR("M751"));
+  } else if (strcmp(SelectedDirectory, "> filament park")==0) {
+    SERIAL_PROTOCOLLNPGM("Filament Menu: Park Filament");
+    enqueue_and_echo_commands_P(PSTR("M752"));
+  } else if (strcmp(SelectedDirectory, "> heat hotend 190c")==0) {
+    SERIAL_PROTOCOLLNPGM("Filament Menu: Heat Hotend to 190c");
+    enqueue_and_echo_commands_P(PSTR("M104 S190"));
+  } else if (strcmp(SelectedDirectory, "> heat hotend 230c")==0) {
+    SERIAL_PROTOCOLLNPGM("Filament Menu: Heat Hotend to 230c");
+    enqueue_and_echo_commands_P(PSTR("M104 S230"));
+  } else if (strcmp(SelectedDirectory, "> hotend off")==0) {
+    SERIAL_PROTOCOLLNPGM("Filament Menu: Disable Hotend");
+    enqueue_and_echo_commands_P(PSTR("M104 S0"));
+  } else if(strcmp(SelectedDirectory, "> loading info")==0) {
     SERIAL_PROTOCOLLNPGM("Filament Menu: Show Help?");
     FilamentHelpMenu=true;
-    FilamentMenu=false;
-  } else if (strcmp(SelectedDirectory, "< back")==0) {
-    FilamentHelpMenu=false;
-    FilamentMenu=true;
+    SSEMenu=false;
+  } else if (strcmp(SelectedDirectory, "> exit")==0) {
+    SpecialMenu=false;
+  } else if (strcmp(SelectedDirectory, "> back")==0) {
+    if(FilamentHelpMenu){
+      FilamentHelpMenu=false;
+      SSEMenu=true;
+    } else {
+      SpecialMenu=true;
+      SSEMenu=false;
+      FilChangeMenu=false;
+      MeshMenu=false;
+      ToolsMenu=false;
+    }
   }
   SelectedDirectory[0]=0;
 }
@@ -518,83 +520,100 @@ void AnycubicTFTClass::Ls()
   if (SpecialMenu) {
     switch (filenumber) {
       case 0: // First Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.1");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.1");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.02");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.02");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.02");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.02");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.1");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.1");
+      if (ENABLED(STOT_SWITCHING_EXTRUDER)){
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> SSE Menu");
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> SSE Menu");
+      }
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Manual Filament Change");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Manual Filament Change");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Bed Levelling");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Bed Levelling");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Tools");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Tools");
+      if(!ENABLED(STOT_SWITCHING_EXTRUDER)){
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Exit");
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Exit");
+      }
       break;
 
       case 4: // Second Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Preheat bed");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Preheat bed");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Start Mesh Leveling");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Start Mesh Leveling");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Next Mesh Point");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Next Mesh Point");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
-      break;
-
-      case 8: // Third Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotend PID");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotend PID");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotbed PID");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotbed PID");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Pause");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Pause");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Resume");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Resume");
-      break;
-
-      case 12: // Fourth Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Load FW Defaults");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Load FW Defaults");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> SSE Menu");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> SSE Menu");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Exit");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Exit");
+      if (ENABLED(STOT_SWITCHING_EXTRUDER)){
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Exit");
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Exit");
+      }
       break;
 
       default:
       break;
     }
-  } else if (FilamentMenu) {
+  } else if (MeshMenu) {
     switch (filenumber) {
       case 0: // First Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 1");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 1");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 2");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 2");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 3");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 3");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 4");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Switch Filament 4");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.1");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.1");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.02");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Up 0.02");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.02");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.02");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.1");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Z Down 0.1");
       break;
 
       case 4: // Second Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Filament Feed 5mm");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Filament Feed 5mm");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Filament Load");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Filament Load");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Filament Retract");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Filament Retract");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 190c");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 190c");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Start Mesh Leveling");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Start Mesh Leveling");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Next Mesh Point");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Next Mesh Point");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
+      break;
+
+      default:
+      break;
+    }
+  } else if (FilChangeMenu) {
+    switch (filenumber) {
+      case 0: // First Page
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Pause");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Pause");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Resume");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> FilamentChange Resume");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
+      break;
+
+      default:
+      break;
+    }
+  } else if (SSEMenu) { // SSE Menu
+    switch (filenumber) {
+      case 0: // First Page
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 1");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 1");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 2");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 2");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 3");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 3");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 4");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Select Filament 4");
+      break;
+
+      case 4: // Second Page
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Filament Load");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Filament Load");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Filament Park");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Filament Park");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Filament Feed 20mm");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Filament Feed 20mm");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Loading Info");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Loading Info");
       break;
 
       case 8: // Third Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 230c");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 230c");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Hotend Off");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Hotend Off");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("? Loading Info");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("? Loading Info");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Exit");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Exit");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
       break;
 
       default:
@@ -620,8 +639,8 @@ void AnycubicTFTClass::Ls()
       ANYCUBIC_SERIAL_PROTOCOLLNPGM(":extruding, select");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM(":new filament, feed");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM(":new filament, feed");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":5mm then retract.");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":5mm then retract.");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":20mm then park.");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":20mm then park.");
       break;
 
       case 8: // Third Page
@@ -629,8 +648,8 @@ void AnycubicTFTClass::Ls()
       ANYCUBIC_SERIAL_PROTOCOLLNPGM(":To clear Y push block");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM(":filament to extruding");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM(":filament to extruding");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":feed 5mm then retract.");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":feed 5mm then retract.");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":feed 20mm then park.");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM(":feed 20mm then park.");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("< Back");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("< Back");
       break;
@@ -638,9 +657,31 @@ void AnycubicTFTClass::Ls()
       default:
       break;
     }
+  } else if (ToolsMenu) {
+    switch (filenumber) {
+      case 0: // First Page
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Preheat bed");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Preheat bed");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Heat Hotend 190c");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Heat Hotend 190c");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 230c");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 230c");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Hotend Off");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Hotend Off");
+      break;
+
+      case 4: // Second Page
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Load FW Defaults");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Load FW Defaults");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
+      break;
+    }
   }
   #ifdef SDSUPPORT
-    else if(card.cardOK)
+    if(card.cardOK)
     {
       uint16_t cnt=filenumber;
       uint16_t max_files;
@@ -688,12 +729,12 @@ void AnycubicTFTClass::Ls()
           }
         }
       }
+    } else {
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
     }
   #endif
-  else {
-    ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special_Menu");
-    ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special_Menu");
-  }
+
 }
 
 void AnycubicTFTClass::CheckSDCardChange()
@@ -1339,12 +1380,8 @@ void AnycubicTFTClass::GetCommandFromTFT()
                 if ((SelectedDirectory[0] == '.') && (SelectedDirectory[1] == '.')) {
                   card.updir();
                 } else {
-                  if (SelectedDirectory[0] == '>') {
+                  if (SelectedDirectory[0] == '>' || SelectedDirectory[0] == '<') {
                     HandleSpecialMenu();
-                  } else if (SelectedDirectory[0] == '~') {
-                    HandleFilamentMenu();
-                  } else if (SelectedDirectory[0] == '?' || SelectedDirectory[0] == '<') {
-                    HandleFilamentHelpMenu();
                   } else if (SelectedDirectory[0] == ':') {
                     // ignore.
                   } else {

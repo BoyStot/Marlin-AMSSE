@@ -109,8 +109,6 @@ private:
   void CheckSDCardChange();
   void CheckHeaterError();
   void HandleSpecialMenu();
-  void HandleFilamentMenu();
-  void HandleFilamentHelpMenu();
   void FilamentChangePause();
   void FilamentChangeResume();
   void ReheatNozzle();
@@ -118,7 +116,10 @@ private:
 
   char     SelectedDirectory[30];
   uint8_t  SpecialMenu=false;
-  uint8_t  FilamentMenu=false;
+  uint8_t  SSEMenu=false;
+  uint8_t  FilChangeMenu=false;
+  uint8_t  MeshMenu=false;
+  uint8_t  ToolsMenu=false;
   uint8_t  FilamentHelpMenu=false;
 
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
