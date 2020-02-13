@@ -664,10 +664,10 @@ void AnycubicTFTClass::Ls()
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Preheat bed");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Heat Hotend 190c");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Heat Hotend 190c");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 230c");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Heat Hotend 230c");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Hotend Off");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("~ Hotend Off");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Heat Hotend 230c");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Heat Hotend 230c");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Hotend Off");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Hotend Off");
       break;
 
       case 4: // Second Page
