@@ -412,90 +412,94 @@ void AnycubicTFTClass::HandleSpecialMenu()
   } else if(strcmp(SelectedDirectory, "> sse menu")==0) {
     SSEMenu=true;
     SpecialMenu=false;
+    SERIAL_PROTOCOLLNPGM("Special Menu: Change SSE Menu");
   } else if(strcmp(SelectedDirectory, "> manual filament change")==0) {
     FilChangeMenu=true;
     SpecialMenu=false;
+    SERIAL_PROTOCOLLNPGM("Special Menu: Change Manual Filament Menu");
   } else if(strcmp(SelectedDirectory, "> bed levelling")==0) {
     MeshMenu=true;
     SpecialMenu=false;
+    SERIAL_PROTOCOLLNPGM("Special Menu: Change Bed Levelling Menu");
   } else if(strcmp(SelectedDirectory, "> tools")==0) {
     ToolsMenu=true;
     SpecialMenu=false;
+    SERIAL_PROTOCOLLNPGM("Special Menu: Change Tools Menu");
   } else if (strcmp(SelectedDirectory, "> auto tune hotend pid")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Auto Tune Hotend PID");
+    SERIAL_PROTOCOLLNPGM("Tools Menu: Auto Tune Hotend PID");
     enqueue_and_echo_commands_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
   } else if (strcmp(SelectedDirectory, "> auto tune hotbed pid")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Auto Tune Hotbed Pid");
+    SERIAL_PROTOCOLLNPGM("Tools Menu: Auto Tune Hotbed Pid");
     enqueue_and_echo_commands_P(PSTR("M303 E-1 S60 C6 U1"));
   } else if (strcmp(SelectedDirectory, "> save eeprom")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Save EEPROM");
+    SERIAL_PROTOCOLLNPGM("Mesh/Tools Menu: Save EEPROM");
     enqueue_and_echo_commands_P(PSTR("M500"));
     buzzer.tone(105, 1108);
     buzzer.tone(210, 1661);
   } else if (strcmp(SelectedDirectory, "> load fw defaults")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Load FW Defaults");
+    SERIAL_PROTOCOLLNPGM("Tools Menu: Load FW Defaults");
     enqueue_and_echo_commands_P(PSTR("M502"));
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
   } else if (strcmp(SelectedDirectory, "> preheat bed")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Preheat Bed");
+    SERIAL_PROTOCOLLNPGM("Tools Menu: Preheat Bed");
     enqueue_and_echo_commands_P(PSTR("M140 S60"));
   } else if (strcmp(SelectedDirectory, "> start mesh leveling")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Start Mesh Leveling");
+    SERIAL_PROTOCOLLNPGM("Mesh Menu: Start Mesh Leveling");
     enqueue_and_echo_commands_P(PSTR("G29 S1"));
   } else if (strcmp(SelectedDirectory, "> next mesh point")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Next Mesh Point");
+    SERIAL_PROTOCOLLNPGM("Mesh Menu: Next Mesh Point");
     enqueue_and_echo_commands_P(PSTR("G29 S2"));
   } else if (strcmp(SelectedDirectory, "> z up 0.1")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Z Up 0.1");
+    SERIAL_PROTOCOLLNPGM("Mesh Menu: Z Up 0.1");
     enqueue_and_echo_commands_P(PSTR("G91\nG1 Z+0.1\nG90"));
   } else if (strcmp(SelectedDirectory, "> z up 0.02")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Z Up 0.02");
+    SERIAL_PROTOCOLLNPGM("Mesh Menu: Z Up 0.02");
     enqueue_and_echo_commands_P(PSTR("G91\nG1 Z+0.02\nG90"));
   } else if (strcmp(SelectedDirectory, "> z down 0.02")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Z Down 0.02");
+    SERIAL_PROTOCOLLNPGM("Mesh Menu: Z Down 0.02");
     enqueue_and_echo_commands_P(PSTR("G91\nG1 Z-0.02\nG90"));
   } else if (strcmp(SelectedDirectory, "> z down 0.1")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: Z Down 0.1");
+    SERIAL_PROTOCOLLNPGM("Mesh Menu: Z Down 0.1");
     enqueue_and_echo_commands_P(PSTR("G91\nG1 Z-0.1\nG90"));
   } else if (strcmp(SelectedDirectory, "> filamentchange pause")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: FilamentChange Pause");
+    SERIAL_PROTOCOLLNPGM("Manual Filamane Change Menu: FilamentChange Pause");
     FilamentChangePause();
   } else if (strcmp(SelectedDirectory, "> filamentchange resume")==0) {
-    SERIAL_PROTOCOLLNPGM("Special Menu: FilamentChange Resume");
+    SERIAL_PROTOCOLLNPGM("Manual Filamane Change Menu: FilamentChange Resume");
     FilamentChangeResume();
   } else if (strcmp(SelectedDirectory, "> select filament 1")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 1");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Switch to Filament 1");
     enqueue_and_echo_commands_P(PSTR("T0"));
   } else if (strcmp(SelectedDirectory, "> select filament 2")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 2");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Switch to Filament 2");
     enqueue_and_echo_commands_P(PSTR("T1"));
   } else if (strcmp(SelectedDirectory, "> select filament 3")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 3");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Switch to Filament 3");
     enqueue_and_echo_commands_P(PSTR("T2"));
   } else if (strcmp(SelectedDirectory, "> select filament 4")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Switch to Filament 4");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Switch to Filament 4");
     enqueue_and_echo_commands_P(PSTR("T3"));
   } else if (strcmp(SelectedDirectory, "> filament feed 20mm")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Feed 20mm Filament");
-    enqueue_and_echo_commands_P(PSTR("G90\nM82\nG92 E0\nG1 F300 E20\nG92 E0"));
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Feed 20mm Filament");
+    enqueue_and_echo_commands_P(PSTR("G90\nM82\nG92 E0\nG1 E20 F300\nG92 E0"));
   } else if (strcmp(SelectedDirectory, "> filament load")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Load Filament");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Load Filament");
     enqueue_and_echo_commands_P(PSTR("M751"));
   } else if (strcmp(SelectedDirectory, "> filament park")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Park Filament");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Park Filament");
     enqueue_and_echo_commands_P(PSTR("M752"));
   } else if (strcmp(SelectedDirectory, "> heat hotend 190c")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Heat Hotend to 190c");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Heat Hotend to 190c");
     enqueue_and_echo_commands_P(PSTR("M104 S190"));
   } else if (strcmp(SelectedDirectory, "> heat hotend 230c")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Heat Hotend to 230c");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Heat Hotend to 230c");
     enqueue_and_echo_commands_P(PSTR("M104 S230"));
   } else if (strcmp(SelectedDirectory, "> hotend off")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Disable Hotend");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Disable Hotend");
     enqueue_and_echo_commands_P(PSTR("M104 S0"));
   } else if(strcmp(SelectedDirectory, "> loading info")==0) {
-    SERIAL_PROTOCOLLNPGM("Filament Menu: Show Help?");
+    SERIAL_PROTOCOLLNPGM("SSE Menu: Show Help?");
     FilamentHelpMenu=true;
     SSEMenu=false;
   } else if (strcmp(SelectedDirectory, "> exit")==0) {
@@ -679,61 +683,64 @@ void AnycubicTFTClass::Ls()
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
       break;
     }
-  }
-  #ifdef SDSUPPORT
-    if(card.cardOK)
-    {
-      uint16_t cnt=filenumber;
-      uint16_t max_files;
-      uint16_t dir_files=card.getnrfilenames();
-
-      if((dir_files-filenumber)<4)
+  } else {
+    #ifdef SDSUPPORT
+      if(card.cardOK)
       {
-        max_files=dir_files;
-      } else {
-        max_files=filenumber+3;
-      }
+        uint16_t cnt=filenumber;
+        uint16_t max_files;
+        uint16_t dir_files=card.getnrfilenames();
 
-      for(cnt=filenumber; cnt<=max_files; cnt++)
-      {
-        if (cnt==0) // Special Entry
+        if((dir_files-filenumber)<4)
         {
-          if(strcmp(card.getWorkDirName(), "/") == 0) {
-            ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
-            ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
-            SERIAL_PROTOCOL(cnt);
-            SERIAL_PROTOCOLLNPGM("> Special_Menu");
-          } else {
-            ANYCUBIC_SERIAL_PROTOCOLLNPGM("/..");
-            ANYCUBIC_SERIAL_PROTOCOLLNPGM("/..");
-            SERIAL_PROTOCOL(cnt);
-            SERIAL_PROTOCOLLNPGM("/..");
-          }
+          max_files=dir_files;
         } else {
-          card.getfilename(cnt-1);
-          //      card.getfilename(cnt);
+          max_files=filenumber+3;
+        }
 
-          if(card.filenameIsDir) {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
-            SERIAL_PROTOCOL(cnt);
-            SERIAL_PROTOCOLPGM("/");
-            SERIAL_PROTOCOLLN(card.longFilename);
+        for(cnt=filenumber; cnt<=max_files; cnt++)
+        {
+          if (cnt==0) // Special Entry
+          {
+            if(strcmp(card.getWorkDirName(), "/") == 0) {
+              ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
+              ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
+              SERIAL_PROTOCOL(cnt);
+              SERIAL_PROTOCOLLNPGM("> Special_Menu");
+            } else {
+              ANYCUBIC_SERIAL_PROTOCOLLNPGM("/..");
+              ANYCUBIC_SERIAL_PROTOCOLLNPGM("/..");
+              SERIAL_PROTOCOL(cnt);
+              SERIAL_PROTOCOLLNPGM("/..");
+            }
           } else {
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
-            SERIAL_PROTOCOL(cnt);
-            SERIAL_PROTOCOLLN(card.longFilename);
+            card.getfilename(cnt-1);
+            //      card.getfilename(cnt);
+
+            if(card.filenameIsDir) {
+              ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+              ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+              ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+              ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+              SERIAL_PROTOCOL(cnt);
+              SERIAL_PROTOCOLPGM("/");
+              SERIAL_PROTOCOLLN(card.longFilename);
+            } else {
+              ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+              ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+              SERIAL_PROTOCOL(cnt);
+              SERIAL_PROTOCOLLN(card.longFilename);
+            }
           }
         }
+      } else {
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
+        ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
+        SERIAL_PROTOCOL(0);
+        SERIAL_PROTOCOLLNPGM("> Special_Menu");
       }
-    } else {
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Special Menu");
-    }
-  #endif
+    #endif
+  }
 
 }
 
