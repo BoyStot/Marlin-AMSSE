@@ -11383,14 +11383,12 @@ inline void gcode_M502() {
     const float cooling_tube_length = parser.seenval('C') ? parser.linearval('C') : COOLING_TUBE_LENGTH;
     const float combiner_length = parser.seenval('Y') ? parser.linearval('Y') : COMBINER_LENGTH;
     const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
-    const float park_point = cooling_tube_length + combiner_to_cooling_bowden_length + combiner_length;
-    const float over_park_point = park_point + 5;
 
     do_pause_e_move(combiner_length, 8); // SLOW insert to bottom of combiner
-    do_pause_e_move(combiner_to_cooling_bowden_length+(combiner_length-15), 80); // FAST insert to CENTRE of cooling tube
+    do_pause_e_move(combiner_to_cooling_bowden_length+(cooling_tube_length-15), 80); // FAST insert to near end of cooling tube
     do_pause_e_move(15,8); // SLOW insert to bottom of cooling tube.
-
-    current_position[E_CART] = 0; // Reset E to 0
+    enqueue_and_echo_commands_P(PSTR("G92 E0"));// Reset E to 0
+    //current_position[E_CART] = 0; // Reset E to 0
   }
 
   /**
@@ -11405,28 +11403,29 @@ inline void gcode_M502() {
    */
   inline void gcode_M752() {
     const float cooling_tube_length = parser.seenval('C') ? parser.linearval('C') : COOLING_TUBE_LENGTH;
-    const float cooling_tube_centre = cooling_tube_length / 2;
     const float combiner_length = parser.seenval('Y') ? parser.linearval('Y') : COMBINER_LENGTH;
     const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
     const float park_point = cooling_tube_length + combiner_to_cooling_bowden_length + combiner_length;
 
-    do_pause_e_move(15, 20); // purge melt zone quickly
+    do_pause_e_move(15, 15); // purge melt zone
+    do_pause_e_move(-cooling_tube_length+2, 80); // FAST retract to top of cooling tube
+    safe_delay(500);
+    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
     do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
     safe_delay(500);
     do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
-    do_pause_e_move(-cooling_tube_centre, 80); // FAST retract to middle of cooling tube
-    do_pause_e_move(cooling_tube_centre, 80); // FAST insert to hotend
-    do_pause_e_move(-cooling_tube_centre, 80); // FAST retract to middle of cooling tube
+    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
     safe_delay(500);
-    do_pause_e_move(cooling_tube_centre, 80); // FAST insert to hotend
-    do_pause_e_move(-cooling_tube_centre, 80); // FAST retract to middle of cooling tube
-    do_pause_e_move(cooling_tube_centre, 80); // FAST insert to hotend
+    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
+    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
+    safe_delay(500);
+    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
     do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
     safe_delay(2000);
     do_pause_e_move(-combiner_to_cooling_bowden_length, 80); // FAST retract to bottom of combiner
     do_pause_e_move(-combiner_length, 8); // SLOW retract to top of combiner
-
-    current_position[E_CART] = 0; // Reset E to 0
+    enqueue_and_echo_commands_P(PSTR("G92 E0")); // Reset E to 0
+    //current_position[E_CART] = 0; // Reset E to 0
   }
 #endif // STOT_SWITCHING_EXTRUDER
 
