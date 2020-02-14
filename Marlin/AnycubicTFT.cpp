@@ -675,10 +675,17 @@ void AnycubicTFTClass::Ls()
       break;
 
       case 4: // Second Page
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotend PID");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotend PID");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotbed PID");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Auto Tune Hotbed PID");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Load FW Defaults");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Load FW Defaults");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Save EEPROM");
+      break;
+
+      case 8: // Third Page
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("> Back");
       break;
