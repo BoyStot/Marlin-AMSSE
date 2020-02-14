@@ -41,7 +41,7 @@
    * Defines the version of the Marlin-AI3M build. Not to be confused with
    * Marlin's own build number, e.g. 1.1.9.
    */
-  #define CUSTOM_BUILD_VERSION "v1.4.6.3"
+  #define CUSTOM_BUILD_VERSION "v1.4.6.4"
 
   /**
    * Verbose version identifier which should contain a reference to the location
@@ -54,7 +54,7 @@
    * here we define this default string as the date where the latest release
    * version was tagged.
    */
-  #define STRING_DISTRIBUTION_DATE "2020-02-03"
+  #define STRING_DISTRIBUTION_DATE "2020-02-14"
 
   /**
    * Required minimum Configuration.h and Configuration_adv.h file versions.
@@ -63,8 +63,8 @@
    * but not limited to: ADD, DELETE RENAME OR REPURPOSE any directive/option on
    * the configuration files.
    */
-  #define REQUIRED_CONFIGURATION_H_VERSION 010109
-  #define REQUIRED_CONFIGURATION_ADV_H_VERSION 010109
+  #define REQUIRED_CONFIGURATION_H_VERSION 010110
+  #define REQUIRED_CONFIGURATION_ADV_H_VERSION 010110
 
   /**
    * The protocol for communication to the host. Protocol indicates communication
@@ -89,7 +89,7 @@
   /**
    * Default generic printer UUID.
    */
-  #define DEFAULT_MACHINE_UUID "cede2a2f-41a2-4748-9b12-c55c62f367ff"
+  #define DEFAULT_MACHINE_UUID "98d8a839-e9b9-ff2a-c406-e8cc6e55eb3f" // SSE Machine ID
 
   /**
    * The WEBSITE_URL is the location where users can get more information such as
