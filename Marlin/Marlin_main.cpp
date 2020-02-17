@@ -11388,7 +11388,6 @@ inline void gcode_M502() {
     do_pause_e_move(combiner_to_cooling_bowden_length+(cooling_tube_length-15), 80); // FAST insert to near end of cooling tube
     do_pause_e_move(15,8); // SLOW insert to bottom of cooling tube.
     enqueue_and_echo_commands_P(PSTR("G92 E0"));// Reset E to 0
-    //current_position[E_CART] = 0; // Reset E to 0
   }
 
   /**
@@ -11398,34 +11397,28 @@ inline void gcode_M502() {
    * Y<distance> - Length of the Y filament combiner from output to input furthest from output. If omitted
    *               COMBINER_LENGTH is used.
    * B<distance> - Bowden tube Length from the top of the cooling tube to the output of the filament combiner. If
-   *               omitted COMBINER_TO_COOLING_BOWDEN_LENGTH is used.
+   *               omitted COMBINER_TO_COOLING_BOWDEN_LENGTH is used
+   * I<count>    - Itterations of the dipping action to process - default 3
+   * D<mseconds> - Cooling delay after first retraction - default 2000
    *
    */
   inline void gcode_M752() {
     const float cooling_tube_length = parser.seenval('C') ? parser.linearval('C') : COOLING_TUBE_LENGTH;
     const float combiner_length = parser.seenval('Y') ? parser.linearval('Y') : COMBINER_LENGTH;
     const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
-    const float park_point = cooling_tube_length + combiner_to_cooling_bowden_length + combiner_length;
+    const uint8_t dip_count = parser.seenval('I') ?  parser.ushortval('I') : 3;
+    const uint16_t dip_delay = parser.seenval('D') ?  parser.ushortval('D') : 2000;
 
-    do_pause_e_move(15, 15); // purge melt zone
-    do_pause_e_move(-cooling_tube_length+2, 80); // FAST retract to top of cooling tube
-    safe_delay(500);
-    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
-    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
-    safe_delay(500);
-    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
-    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
-    safe_delay(500);
-    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
-    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
-    safe_delay(500);
-    do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
-    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
-    safe_delay(2000);
-    do_pause_e_move(-combiner_to_cooling_bowden_length, 80); // FAST retract to bottom of combiner
-    do_pause_e_move(-combiner_length, 8); // SLOW retract to top of combiner
+    do_pause_e_move(10, 8); // purge melt zone
+    do_pause_e_move(-(cooling_tube_length+10), 80); // FAST retract to just past top of cooling tube
+    safe_delay(dip_delay); // WAIT for end to cool
+    for (uint8_t r = 0; r < dip_count; r++) {
+      do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
+      do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
+      safe_delay(500);
+    }
+    do_pause_e_move(-(combiner_to_cooling_bowden_length+combiner_length), 80); // FAST retract to bottom of combiner
     enqueue_and_echo_commands_P(PSTR("G92 E0")); // Reset E to 0
-    //current_position[E_CART] = 0; // Reset E to 0
   }
 #endif // STOT_SWITCHING_EXTRUDER
 
