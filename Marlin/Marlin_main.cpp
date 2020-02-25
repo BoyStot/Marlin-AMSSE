@@ -11384,9 +11384,9 @@ inline void gcode_M502() {
     const float combiner_length = parser.seenval('Y') ? parser.linearval('Y') : COMBINER_LENGTH;
     const float combiner_to_cooling_bowden_length = parser.seenval('B') ? parser.linearval('B') : COMBINER_TO_COOLING_BOWDEN_LENGTH;
 
-    do_pause_e_move(combiner_length, 8); // SLOW insert to bottom of combiner
+    do_pause_e_move(combiner_length, 16); // Insert to bottom of combiner
     do_pause_e_move(combiner_to_cooling_bowden_length+(cooling_tube_length-15), 80); // FAST insert to near end of cooling tube
-    do_pause_e_move(15,8); // SLOW insert to bottom of cooling tube.
+    do_pause_e_move(15,6); // SLOW insert to bottom of cooling tube.
     enqueue_and_echo_commands_P(PSTR("G92 E0"));// Reset E to 0
   }
 
@@ -11410,14 +11410,16 @@ inline void gcode_M502() {
     const uint16_t dip_delay = parser.seenval('D') ?  parser.ushortval('D') : 2000;
 
     do_pause_e_move(10, 8); // purge melt zone
-    do_pause_e_move(-(cooling_tube_length+10), 80); // FAST retract to just past top of cooling tube
-    safe_delay(dip_delay); // WAIT for end to cool
+    do_pause_e_move(-cooling_tube_length, 80); // FAST retract to just past top of cooling tube
+    do_pause_e_move((cooling_tube_length/2), 80); // FAST insert to near hotend
     for (uint8_t r = 0; r < dip_count; r++) {
-      do_pause_e_move(cooling_tube_length, 80); // FAST insert to hotend
-      do_pause_e_move(-cooling_tube_length, 80); // FAST retract to top of cooling tube
+      do_pause_e_move((cooling_tube_length/2), 80); // FAST insert
+      do_pause_e_move(-(cooling_tube_length/2), 80); // FAST retract
       safe_delay(500);
     }
-    do_pause_e_move(-(combiner_to_cooling_bowden_length+combiner_length), 80); // FAST retract to bottom of combiner
+    do_pause_e_move(-(cooling_tube_length/2), 80); // FAST retract to top of cooling tube
+    safe_delay(dip_delay); // WAIT for end to cool
+    do_pause_e_move(-(combiner_to_cooling_bowden_length+combiner_length), 80); // FAST retract to top of combiner
     enqueue_and_echo_commands_P(PSTR("G92 E0")); // Reset E to 0
   }
 #endif // STOT_SWITCHING_EXTRUDER
